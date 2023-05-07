@@ -1,0 +1,11 @@
+.container{
+    background-color: white;
+    width: max-content;
+    height: max-content;
+    border-radius: 10px;
+}
+
+.vl {
+    border-left: 6px solid green;
+    height: 500px;
+  }

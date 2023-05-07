@@ -1,0 +1,14 @@
+#member{
+    width: 500px;
+    height: 200px;
+    border: 2px solid purple;
+    margin-top: auto;
+    align-items: center;
+    display: inline;
+}
+
+.container{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
