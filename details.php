@@ -21,7 +21,7 @@ require('database/buttons.php');
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Book details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" href="style/details.css">
 </head>
@@ -46,8 +46,7 @@ require('database/buttons.php');
 
                 <br>
 
-                <h4>Realeased by </h4>
-                <p>Rifai Studio in 1933</p>
+                <h4>Realeased in <?= $data['released']?></h4>
             </div>
         </div>
         <?php } ?>

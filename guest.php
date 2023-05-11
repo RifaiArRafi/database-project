@@ -2,6 +2,35 @@
 require('database/config.php');
 require('database/functions.php');
 require('database/buttons.php');
+
+if(isset($_POST["newest"])){
+  // $sort_type = $_GET["sort-type"];
+  $find_newest_query = "SELECT * FROM books GROUP BY released DESC ";
+  $books = mysqli_query($conn,$find_newest_query);
+}
+
+$year_above ="";
+$year_below ="";
+$year_low="";
+$year_high="";
+if(isset($_GET['above'])){
+  $year_above = $_GET['search-above'];
+
+  $above_query = "SELECT * FROM books GROUP BY released HAVING released > $year_above";
+  $books = mysqli_query($conn,$above_query);
+}elseif (isset($_GET['below'])) {
+  $year_below = $_GET['search-below'];
+
+  $below_query = "SELECT * FROM books GROUP BY released HAVING released < $year_below";
+  $books = mysqli_query($conn,$below_query);
+}elseif (isset($_GET['between'])) {
+  $year_low = $_GET['low-between'];
+  $year_high = $_GET['high-between'];
+
+  $below_query = "SELECT * FROM books GROUP BY released HAVING released BETWEEN $year_low and $year_high";
+  $books = mysqli_query($conn,$below_query);
+}
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -29,7 +58,37 @@ require('database/buttons.php');
 <h1 style="justify-content: center; display: flex; color: white;"> WELCOME TO OUR HOME PAGE</h1>
 
 <!--for offcanvas-->
-<button class="btn btn-dark m-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Your borrowed books</button>
+<form  method="post">
+  <button class="btn btn-primary m-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Your borrowed books</button>
+  <button class="btn btn-primary m-4" type="submit" name="newest">Newest released book</button>
+</form>
+
+<form method="get">
+  <div class="container">
+    <h5 style="justify-content: center; display: flex; color: white;">Search books above specific year</h5> <br>
+    <div class="input-group mb-3">
+    
+      <button class="btn btn-primary" type="submit" id="button-addon1" name="above">Search</button>
+      <input name="search-above" type="text" class="form-control" placeholder="e.g 2003..." aria-label="Example text with button addon" aria-describedby="button-addon1">
+      
+    </div>
+
+    <h5 style="justify-content: center; display: flex; color: white;">Search books below specific year</h5> <br>
+    <div class="input-group mb-3">
+      <button class="btn btn-primary" type="submit" id="button-addon1" name="below">Search</button>
+      <input name="search-below" type="text" class="form-control" placeholder="e.g 2017..." aria-label="Example text with button addon" aria-describedby="button-addon1">
+    </div>
+
+    <h5 style="justify-content: center; display: flex; color: white;">Search books between years</h5> <br>
+    <div class="input-group mb-3">
+      <button class="btn btn-primary" type="submit" id="button-addon1" name="between">Search</button>
+      <input type="text" class="form-control" placeholder="e.g 2003..." aria-label="Username" name="low-between">
+      <span class="input-group-text">and</span>
+      <input type="text" class="form-control" placeholder="e.g 2010" aria-label="Server" name="high-between">
+      
+    </div>
+  </div>
+  </form>
 
 <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
   <div class="offcanvas-header">
@@ -58,13 +117,20 @@ require('database/buttons.php');
         
         <form action="" method="post">
           <input type="hidden" value="<?= $data['book_id']?>" name="id_bor">
-          <button onclick="hayo()" type="submit" name="borrow" class="btn btn-primary mt-2">Borrow</button>
+          <button onclick="hayo()" type="submit" class="btn btn-primary mt-2">Borrow</button>
         </form>
         
       </div>
     </div>
-    <?php } ?>  
+    <?php } ?>
+
+    <div class="footer">
+      <form action="" method="post">
+        <button style="margin-left: 45%;" class="btn btn-primary" type="submit" name="back">Back to login page</button>
+      </form>
+    </div>
   </div>  
+ 
 
     <script>
       function hayo() {

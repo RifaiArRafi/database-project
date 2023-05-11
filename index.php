@@ -8,36 +8,6 @@ session_start();
 if(!isset($_SESSION["Login"])){
   header("location: login-register/login/index.php");
 }
-
-$borrow = "SELECT * FROM borrowed_books";
-$res = mysqli_query($conn, $borrow);
-$borrow_quantity = mysqli_num_rows($res);
-
-$borrow_quantity_query = "SELECT 'COUNT(book_id)' FROM borrowed_books";
-$borrow_result = mysqli_query($conn, $borrow_quantity_query);
-
-if(isset($_POST['borrow'])){
-  $id_borr = $_POST['id_bor'];
-
-  $validate_book = mysqli_query($conn, "SELECT * FROM borrowed_books WHERE book_id = $id_borr");
-  if( $borrow_quantity >= 5){
-    echo "<script>alert('You cannot borrow books more than 5')</script>";
-  }else if(mysqli_num_rows($validate_book) == 1){
-    echo "<script>alert('You cannot borrow the same book more than twice')</script>";
-
-  }else {
-    $lend_book = "INSERT INTO borrowed_books (book_id, book_title, book_image) SELECT book_id, book_title, book_image FROM books where book_id = $id_borr";
-    $res_lend = mysqli_query($conn, $lend_book);
-    header("location: index.php");
-  }
-}
-
-if(isset($_POST['delete'])){
-  $id_del = $_POST['id_del'];
-  $del_book= "DELETE FROM borrowed_books WHERE book_id = $id_del";
-  $res_del = mysqli_query($conn, $del_book);
-  header("location: index.php");
-}
 ?>
 
 <!doctype html>
@@ -58,14 +28,48 @@ if(isset($_POST['delete'])){
       <input class="form-control me-2" type="search" placeholder="Search by title.." aria-label="Search" name="search-input" autofocus>
       <button class="btn btn-outline-success" type="submit" name="submit-button">Search</button>
     </form>
+    <form action="" method="post">
+      <button class="btn btn-primary" type="submit" name="logout">Logout</button>
+    </form>
   </div>
 </nav>
 
   <hr>
 
-<h1 style="justify-content: center; display: flex; color: white;"> WELCOME TO OUR HOME PAGE</h1>
+<h1 style="justify-content: center; display: flex; color: lightblue;"> WELCOME TO OUR HOME PAGE</h1>
 
-<button class="btn btn-primary m-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Your borrowed books</button>
+
+<form  method="post">
+  <button class="btn btn-primary m-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Your borrowed books</button>
+  <button class="btn btn-primary m-4" type="submit" name="newest">Newest released book</button>
+</form>
+
+<form method="get">
+  <div class="container">
+    <h5 style="justify-content: center; display: flex; color: lightblue;">Search books above specific year</h5> <br>
+    <div class="input-group mb-3">
+    
+      <button class="btn btn-primary" type="submit" id="button-addon1" name="above">Search</button>
+      <input name="search-above" type="text" class="form-control" placeholder="e.g 2003..." aria-label="Example text with button addon" aria-describedby="button-addon1">
+      
+    </div>
+
+    <h5 style="justify-content: center; display: flex; color: lightblue;">Search books below specific year</h5> <br>
+    <div class="input-group mb-3">
+      <button class="btn btn-primary" type="submit" id="button-addon1" name="below">Search</button>
+      <input name="search-below" type="text" class="form-control" placeholder="e.g 2017..." aria-label="Example text with button addon" aria-describedby="button-addon1">
+    </div>
+
+    <h5 style="justify-content: center; display: flex; color: lightblue;">Search books between years</h5> <br>
+    <div class="input-group mb-3">
+      <button class="btn btn-primary" type="submit" id="button-addon1" name="between">Search</button>
+      <input type="text" class="form-control" placeholder="e.g 2003..." aria-label="Username" name="low-between">
+      <span class="input-group-text">and</span>
+      <input type="text" class="form-control" placeholder="e.g 2010" aria-label="Server" name="high-between">
+      
+    </div>
+  </div>
+  </form>
 
 <div style="overflow-y: scroll; max-height 500px" class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
   <div class="offcanvas-header">
@@ -99,7 +103,7 @@ if(isset($_POST['delete'])){
       <div class="card-body">
         <h5 class="card-title"><?= $data['book_title']?></h5>
         <p class="card-text"><?= $data['book_excerpt']?></p>
-        <a href="details.php?id=<?= $data['book_id']?>" class="btn btn-primary" name="details">See details</a>
+        <a href="details.php?id=<?= $data['book_id']?>" target="_blank" class="btn btn-primary" name="details">See details</a>
         
         <form action="" method="post">
           <input type="hidden" value="<?= $data['book_id']?>" name="id_bor">
@@ -112,12 +116,6 @@ if(isset($_POST['delete'])){
   </div>  
 
 </div>
-
-<div class="footer">
-  <form action="" method="post">
-    <button style="margin-left: 45%;" class="btn btn-primary" type="submit" name="logout">Logout</button>
-  </form>
-  </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
   </body>
